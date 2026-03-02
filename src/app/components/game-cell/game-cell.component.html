@@ -1,0 +1,8 @@
+<button
+  type="button"
+  class="cell"
+  [ngClass]="cell.color"
+  [disabled]="cell.color !== 'yellow'"
+  [attr.aria-label]="'Cell row ' + (cell.row + 1) + ', column ' + (cell.col + 1) + ', color ' + cell.color"
+  (click)="onClick()"
+></button>

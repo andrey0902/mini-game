@@ -1,0 +1,51 @@
+<main class="game-page">
+  <h1>Mini Game</h1>
+
+  @if (vm$ | async; as vm) {
+    <section class="controls">
+      <label for="roundMs">N (milliseconds)</label>
+      <input
+        id="roundMs"
+        type="number"
+        min="100"
+        max="10000"
+        step="50"
+        [ngModel]="roundDurationMs()"
+        (ngModelChange)="onRoundDurationChange($event)"
+      />
+
+      <button
+        type="button"
+        class="primary"
+        [disabled]="vm.status === 'running' || !isDurationValid()"
+        (click)="onStart()"
+      >
+        Start
+      </button>
+      <button type="button" class="ghost" [disabled]="!isDurationValid()" (click)="onRestart()">Restart</button>
+    </section>
+
+    @if (!isDurationValid()) {
+      <p class="error" role="alert">N must be between 100 and 10000 milliseconds.</p>
+    }
+
+    @if (vm.error) {
+      <p class="error" role="alert">{{ vm.error }}</p>
+    }
+
+    <section class="scoreboard">
+      <p class="score">Player: {{ vm.score.player }} - Computer: {{ vm.score.computer }}</p>
+      <p class="status">{{ vm.statusMessage }}</p>
+    </section>
+
+    <app-game-board [cells]="vm.cells" (cellClick)="onCellClick($event)"></app-game-board>
+
+    <app-modal
+      [open]="modalOpen()"
+      [winnerText]="(modalWinnerText$ | async) ?? '-'"
+      [finalScoreText]="(modalScoreText$ | async) ?? '-'"
+      (playAgain)="onPlayAgain()"
+      (close)="onCloseModal()"
+    ></app-modal>
+  }
+</main>

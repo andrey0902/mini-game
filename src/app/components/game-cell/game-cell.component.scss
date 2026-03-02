@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  aspect-ratio: 1 / 1;
+}
+
+.cell {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 180ms ease;
+}
+
+.cell:disabled {
+  cursor: default;
+}
+
+.cell:not(:disabled):hover {
+  transform: scale(0.97);
+}
+
+.blue {
+  background: #2463eb;
+}
+
+.yellow {
+  background: #ffd54a;
+  box-shadow: 0 0 0 2px rgba(255, 213, 74, 0.45);
+}
+
+.green {
+  background: #17b978;
+}
+
+.red {
+  background: #f04452;
+}

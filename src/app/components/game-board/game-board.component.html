@@ -1,0 +1,7 @@
+<div class="board" role="grid" aria-label="10 by 10 game board">
+  <app-game-cell
+    *ngFor="let cell of cells; trackBy: trackByCellId"
+    [cell]="cell"
+    (cellClick)="onCellClick($event)"
+  ></app-game-cell>
+</div>

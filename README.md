@@ -1,27 +1,22 @@
-# Yes
+# Mini Game - 10x10 Grid Reaction
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.5.
+Standalone Angular mini-game with RxJS-driven game loop, custom accessible modal, and deterministic scoring.
 
-## Development server
+## Run
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+1. Install dependencies: `npm install`
+2. Start dev server: `npm start`
+3. Open `http://localhost:4200/`
 
-## Code scaffolding
+## Architecture
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Uses standalone Angular components with `ChangeDetectionStrategy.OnPush` throughout the UI.
+- `GameEngineService` owns game state and round lifecycle (start/restart/stop/click), keeping components presentation-focused.
+- Round timing uses RxJS `timer()` with cancellation via `takeUntil` to prevent timeout leaks and race conditions.
+- Strongly typed game domain in `game.models.ts` (`CellVM`, `Score`, `GameStatus`, `RoundResult`, etc.).
+- `RandomService` isolates random cell picking for testability and clean dependency boundaries.
+- `GamePageComponent` is a container that binds controls to service methods and composes board + modal.
+- `GameBoardComponent`/`GameCellComponent` are presentational and use `trackBy` to minimize re-renders.
+- Custom `ModalComponent` provides ARIA dialog semantics, escape handling, backdrop close, and basic keyboard focus trap.
+- Guard rails prevent invalid `N`, start spam, post-finish interaction, and double scoring on repeated clicks.
+- No browser alerts/confirm APIs are used; all end-game UX is handled by the modal.

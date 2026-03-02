@@ -1,0 +1,21 @@
+@if (open) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)">
+    <section
+      #dialog
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="result-title"
+      tabindex="-1"
+    >
+      <h2 id="result-title">Game finished</h2>
+      <p class="result"><strong>Winner:</strong> {{ winnerText }}</p>
+      <p class="result"><strong>Final score:</strong> {{ finalScoreText }}</p>
+
+      <div class="actions">
+        <button #playAgainButton type="button" class="primary" (click)="playAgain.emit()">Play again</button>
+        <button type="button" class="ghost" (click)="close.emit()">Close</button>
+      </div>
+    </section>
+  </div>
+}
