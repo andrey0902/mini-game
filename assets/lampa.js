@@ -1611,8 +1611,9 @@
       Не читаем сохранённую rezka-cookie
       Не добавляем Cookie в headers
       Не добавляем Cookie в prox_enc
-
       БЫЛО:
+*/
+
       var cookie = Lampa.Storage.get('online_mod_rezka2_cookie', '') + '';
       if (cookie.indexOf('PHPSESSID=') == -1) {
         cookie = 'PHPSESSID=' + Utils.randomId(26) + (cookie ? '; ' + cookie : '');
@@ -1627,7 +1628,6 @@
           prox_enc += 'param/Cookie=' + encodeURIComponent(cookie) + '/';
         }
       }
-    */
 
     var embed = ref;
     var filter_items = {};
