@@ -1631,8 +1631,7 @@
       var login_form = str.match(/<form id="check-form" class="check-form" method="post" action="\/ajax\/login\/">/);
 
       if (login_form) {
-        // Guest mode: do not force credential-based authorization flow.
-        // If the mirror requires auth, regular "no results" handling will be used.
+        error_message = Lampa.Lang.translate('online_mod_authorization_required') + ' HDrezka';
         return;
       }
 
@@ -13508,6 +13507,8 @@
     Lampa.Params.select('online_mod_kinobase_mirror', '', '');
     Lampa.Params.select('online_mod_kinobase_cookie', '', '');
     Lampa.Params.select('online_mod_rezka2_mirror', '', '');
+    Lampa.Params.select('online_mod_rezka2_name', '', '');
+    Lampa.Params.select('online_mod_rezka2_password', '', '');
     Lampa.Params.select('online_mod_rezka2_cookie', '', '');
     Lampa.Params.select('online_mod_rezka2_prx_ukr', {
       'prx.ukrtelcdn.net': 'prx.ukrtelcdn.net',
@@ -14795,7 +14796,17 @@
       template += "\n        <div class=\"settings-param selector\" data-name=\"online_mod_proxy_rezka2_mirror\" data-type=\"toggle\">\n            <div class=\"settings-param__name\">#{online_mod_proxy_rezka2_mirror}</div>\n            <div class=\"settings-param__value\"></div>\n        </div>";
     }
 
-    template += "\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_cookie\" data-type=\"input\" data-string=\"true\" placeholder=\"#{settings_cub_not_specified}\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_cookie}</div>\n            <div class=\"settings-param__value\"></div>\n        </div>";
+    template += "\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_name\" data-type=\"input\" placeholder=\"#{settings_cub_not_specified}\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_name}</div>\n            <div class=\"settings-param__value\"></div>\n        </div>\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_password\" data-type=\"input\" data-string=\"true\" placeholder=\"#{settings_cub_not_specified}\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_password}</div>\n            <div class=\"settings-param__value\"></div>\n        </div>";
+
+    if (Lampa.Platform.is('android')) {
+      Lampa.Storage.set("online_mod_rezka2_status", 'false');
+    } else {
+      template += "\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_login\" data-static=\"true\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_login}</div>\n            <div class=\"settings-param__status\"></div>\n        </div>\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_logout\" data-static=\"true\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_logout}</div>\n            <div class=\"settings-param__status\"></div>\n        </div>";
+    }
+
+    if (Utils.isDebug() || Lampa.Platform.is('android')) {
+      template += "\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_cookie\" data-type=\"input\" data-string=\"true\" placeholder=\"#{settings_cub_not_specified}\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_cookie}</div>\n            <div class=\"settings-param__value\"></div>\n        </div>\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_fill_cookie\" data-static=\"true\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_fill_cookie}</div>\n            <div class=\"settings-param__status\"></div>\n        </div>";
+    }
 
     {
       template += "\n        <div class=\"settings-param selector\" data-name=\"online_mod_rezka2_fix_stream\" data-type=\"toggle\">\n            <div class=\"settings-param__name\">#{online_mod_rezka2_fix_stream}</div>\n            <div class=\"settings-param__value\"></div>\n        </div>";
@@ -14841,6 +14852,35 @@
           Lampa.Storage.set('online_mod_last_balanser', {});
           Lampa.Storage.set('online_mod_balanser', '');
           $('.settings-param__status', clear_last_balanser).removeClass('active error wait').addClass('active');
+        });
+        var rezka2_login = e.body.find('[data-name="online_mod_rezka2_login"]');
+        rezka2_login.unbind('hover:enter').on('hover:enter', function () {
+          var rezka2_login_status = $('.settings-param__status', rezka2_login).removeClass('active error wait').addClass('wait');
+          rezka2Login(function () {
+            rezka2_login_status.removeClass('active error wait').addClass('active');
+          }, function () {
+            rezka2_login_status.removeClass('active error wait').addClass('error');
+          });
+        });
+        var rezka2_logout = e.body.find('[data-name="online_mod_rezka2_logout"]');
+        rezka2_logout.unbind('hover:enter').on('hover:enter', function () {
+          var rezka2_logout_status = $('.settings-param__status', rezka2_logout).removeClass('active error wait').addClass('wait');
+          rezka2Logout(function () {
+            rezka2_logout_status.removeClass('active error wait').addClass('active');
+          }, function () {
+            rezka2_logout_status.removeClass('active error wait').addClass('error');
+          });
+        });
+        var rezka2_fill_cookie = e.body.find('[data-name="online_mod_rezka2_fill_cookie"]');
+        rezka2_fill_cookie.unbind('hover:enter').on('hover:enter', function () {
+          var rezka2_fill_cookie_status = $('.settings-param__status', rezka2_fill_cookie).removeClass('active error wait').addClass('wait');
+          rezka2FillCookie(function () {
+            rezka2_fill_cookie_status.removeClass('active error wait').addClass('active');
+            Lampa.Params.update(e.body.find('[data-name="online_mod_rezka2_cookie"]'), [], e.body);
+          }, function () {
+            rezka2_fill_cookie_status.removeClass('active error wait').addClass('error');
+            Lampa.Params.update(e.body.find('[data-name="online_mod_rezka2_cookie"]'), [], e.body);
+          });
         });
         var fancdn_fill_cookie = e.body.find('[data-name="online_mod_fancdn_fill_cookie"]');
         fancdn_fill_cookie.unbind('hover:enter').on('hover:enter', function () {
